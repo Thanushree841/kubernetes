@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/youruser/myapp.git'
+                git branch: 'main', url: 'https://github.com/Thanushree841/kubernetes.git'
             }
         }
 
