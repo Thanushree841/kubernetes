@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "yourdockerhubusername/myapp"
+        IMAGE_NAME = "9148092892/myapp"
         DEPLOYMENT_FILE = "k8s/deployment.yaml"
     }
 
