@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_REPO_CREDENTIALS = 'a5528c83-e532-4484-ae9b-135493e3957b'
-        DOCKER_IMAGE = '9148092892/kubernetes'          
+        DOCKER_IMAGE = '9148092892/kubernetes'         
         GIT_REPO = 'https://github.com/Thanushree841/kubernetes.git'
         BRANCH = 'main'
     }
