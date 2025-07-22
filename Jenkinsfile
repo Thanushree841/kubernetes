@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'docker' }
+    agent any
 
     environment {
         DOCKER_REPO_CREDENTIALS = 'a5528c83-e532-4484-ae9b-135493e3957b'
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                     echo "Pushing images to registry"
-                    echo "IMAGE_TAG_LATEST: ${IMAGE_TAG_LATEST}
+                    echo "IMAGE_TAG_LATEST: ${IMAGE_TAG_LATEST}"
                 
                     sh "docker push ${IMAGE_TAG_LATEST}"
                 }
