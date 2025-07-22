@@ -1,46 +1,57 @@
 pipeline {
-    agent any
+    agent { label 'docker' }
 
     environment {
-        IMAGE_NAME = "9148092892/myapp"
-        DEPLOYMENT_FILE = "k8s/deployment.yaml"
+        DOCKER_REPO_CREDENTIALS = 'a5528c83-e532-4484-ae9b-135493e3957b'
+        DOCKER_IMAGE = '9148092892/thanu'          
+        GIT_REPO = 'https://github.com/Thanushree841/kubernetes.git'
+        BRANCH = 'main'
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/Thanushree841/kubernetes.git'
+                echo "Cloning repository from ${GIT_REPO}"
+                git branch: "${BRANCH}", url: "${GIT_REPO}"
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh "docker build -t $IMAGE_NAME:${BUILD_NUMBER} ."
-                }
-            }
-        }
-
-        stage('Login to Docker Hub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: '13826fff-e199-442b-b451-bbc79e53928e', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
+       stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker push $IMAGE_NAME:${BUILD_NUMBER}"
-                    // Tag as latest and push
-                    sh "docker tag $IMAGE_NAME:${BUILD_NUMBER} $IMAGE_NAME:latest"
-                    sh "docker push $IMAGE_NAME:latest"
+            
+                    IMAGE_TAG_LATEST = "${DOCKER_IMAGE}:latest"
+
+                    echo "Building Docker image with tags:${IMAGE_TAG_LATEST}"
+                    sh "docker build -t ${IMAGE_TAG_LATEST} ."
                 }
             }
         }
 
-        stage('Deploy to Kubernetes') {
+        stage('Authenticate with Docker Registry') {
+            steps {
+                script {
+                    echo "Logging in to Docker registry"
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_REPO_CREDENTIALS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
+                script {
+                    echo "Pushing images to registry"
+                    echo "IMAGE_TAG_LATEST: ${IMAGE_TAG_LATEST}
+                
+                    sh "docker push ${IMAGE_TAG_LATEST}"
+                }
+            }
+        }
+    }
+
+              stage('Deploy to Kubernetes') {
             steps {
                 script {
                     // Update the image in deployment.yaml
