@@ -37,7 +37,7 @@ pipeline {
                     }
                 }
             }
-        }
+        
 
         stage('Push Docker Images') {
             steps {
@@ -49,7 +49,7 @@ pipeline {
                 }
             }
         }
-    }
+    
 
               stage('Deploy to Kubernetes') {
             steps {
@@ -73,3 +73,5 @@ pipeline {
         }
     }
 }
+}
+
