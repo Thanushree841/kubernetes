@@ -1,13 +1,11 @@
 pipeline {
     agent any
-
-    environment {
+   environment {
         DOCKER_REPO_CREDENTIALS = 'a5528c83-e532-4484-ae9b-135493e3957b'
         DOCKER_IMAGE = '9148092892/kubernetes'         
         GIT_REPO = 'https://github.com/Thanushree841/kubernetes.git'
         BRANCH = 'main'
     }
-
     stages {
         stage('Clone Repository') {
             steps {
@@ -15,20 +13,16 @@ pipeline {
                 git branch: "${BRANCH}", url: "${GIT_REPO}"
             }
         }
-
        stage('Build Docker Image') {
             steps {
                 script {
-            
                     IMAGE_TAG_LATEST = "${DOCKER_IMAGE}:latest"
-
                     echo "Building Docker image with tags:${IMAGE_TAG_LATEST}"
                     sh "docker build -t ${IMAGE_TAG_LATEST} ."
                 }
             }
         }
-
-        stage('Authenticate with Docker Registry') {
+         stage('Authenticate with Docker Registry') {
             steps {
                 script {
                     echo "Logging in to Docker registry"
@@ -37,9 +31,7 @@ pipeline {
                     }
                 }
             }
-        
-
-        stage('Push Docker Images') {
+         stage('Push Docker Images') {
             steps {
                 script {
                     echo "Pushing images to registry"
@@ -49,9 +41,7 @@ pipeline {
                 }
             }
         }
-    
-
-              stage('Deploy to Kubernetes') {
+         stage('Deploy to Kubernetes') {
             steps {
                 script {
                     // Update the image in deployment.yaml
@@ -63,8 +53,7 @@ pipeline {
             }
         }
     }
-
-    post {
+ post {
         success {
             echo " Deployment succeeded!"
         }
@@ -73,5 +62,3 @@ pipeline {
         }
     }
 }
-
-
