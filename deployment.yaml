@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp
+  name: mywebapp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: myapp
+      app: mywebapp
   template:
     metadata:
       labels:
-        app: myapp
+        app: mywebapp
     spec:
       containers:
-      - name: myapp
-        image: yourdockerhubusername/myapp:latest
+      - name: mywebapp
+        image: docker pull 9148092892/kubernetes:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 80
